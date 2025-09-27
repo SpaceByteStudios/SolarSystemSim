@@ -178,13 +178,16 @@ void Planet::drawAccArrow(sf::RenderWindow& window, const sf::View& cameraView, 
 	}
 }
 
-void Planet::updateTrail()
+void Planet::updateTrail(float deltaTime)
 {
 	trail.push_back(position);
 
-	if (trail.size() > 300)
+	float amount_factor = (1.0f / 60.0f) / deltaTime;
+	std::size_t maxSize = static_cast<std::size_t>(300 * amount_factor);
+
+	if (trail.size() > maxSize)
 	{
-		trail.erase(trail.begin());
+		trail.erase(trail.begin(), trail.begin() + (trail.size() - maxSize));
 	}
 }
 
@@ -210,6 +213,7 @@ void Planet::reset()
 {
 	position = initial_position;
 	velocity = initial_velocity;
+	acceleration_before = sf::Vector2f(0.0f, 0.0f);
 	updateShapePos();
 	updateLabelPos();
 	trail.clear();

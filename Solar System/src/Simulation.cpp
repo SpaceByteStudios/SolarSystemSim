@@ -25,6 +25,7 @@ Simulation::Simulation(const sf::Vector2u& res, float gravity)
     camera_speed = 500.0f;
     G = gravity;
 
+	show_ui = true;
     show_name = false;
     show_trail = false;
     show_trajectory = false;
@@ -53,7 +54,7 @@ void Simulation::run()
         for (int i = 0; i < planets.size(); i++)
         {
             planets[i].updatePos(delta_time * time_scale);
-            planets[i].updateTrail();
+            planets[i].updateTrail(delta_time * time_scale);
         }
 
         for (int i = 0; i < planets.size(); i++)
@@ -117,7 +118,15 @@ void Simulation::render()
         planets[selectedPlanet].drawAccArrow(window, renderer.getCamera(), draw_acc_arrow);
     }
     
-    ImGui::SFML::Render(window);
+    if (show_ui)
+    {
+        ImGui::SFML::Render(window);
+    }
+    else
+    {
+        ImGui::EndFrame();
+    }
+
     renderer.displayWindow();
 }
 
@@ -142,6 +151,11 @@ void Simulation::processInput()
                         state = State::Paused;
                         break;
                 }
+            }
+
+            if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
+            {
+				show_ui = !show_ui;
             }
         }
     }
@@ -172,7 +186,6 @@ void Simulation::processInput()
 
 void Simulation::updateUI()
 {
-    //ImGui::ShowDemoWindow();
     ImGui::SFML::Update(window, sf::seconds(delta_time));
     
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x - 10.0f, 10.0f), ImGuiCond_Always, ImVec2(1.0f, 0.0f));

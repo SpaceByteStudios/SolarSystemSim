@@ -20,7 +20,7 @@ public:
 	void drawArrow(sf::RenderWindow& window, const sf::View& cameraView, const sf::Vector2f& vec, float length, sf::Color color);
 	void drawVelArrow(sf::RenderWindow& window, const sf::View& cameraView, bool drawing);
 	void drawAccArrow(sf::RenderWindow& window, const sf::View& cameraView, bool drawing);
-	void updateTrail();
+	void updateTrail(float deltaTime);
 	void drawTrail(sf::RenderWindow& window);
 	void reset();
 	void initLabel(const sf::Font& font);

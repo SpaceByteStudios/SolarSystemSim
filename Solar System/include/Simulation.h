@@ -50,6 +50,7 @@ private:
 
 	int selectedPlanet;
 
+	bool show_ui;
 	bool show_name;
 	bool show_trail;
 	bool show_trajectory;

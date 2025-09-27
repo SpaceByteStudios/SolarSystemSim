@@ -68,6 +68,5 @@ void Renderer::renderPlanets(std::vector<Planet>& planets)
 		planets[i].draw(window);
 		window.setView(window.getDefaultView());
 		planets[i].drawLabel(window, camera);
-
 	}
 }
