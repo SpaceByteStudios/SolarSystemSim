@@ -3,6 +3,7 @@
 #include "Simulation.h"
 #include "Renderer.h"
 #include "imgui.h"
+#include "imgui_stdlib.h"
 #include "imgui-SFML.h"
 
 Simulation::Simulation(float gravity) : Simulation(sf::Vector2u(1280, 720), gravity)
@@ -18,7 +19,7 @@ Simulation::Simulation(const sf::Vector2u& res, float gravity)
         stop();
     }
     
-    bool loaded = font.openFromFile("assets/arial.ttf");
+    bool loaded = font.openFromFile("assets/SpaceMono.ttf");
     if (!loaded)
         std::cerr << "Failed to load the font!" << std::endl;
 
@@ -188,6 +189,8 @@ void Simulation::updateUI()
 {
     ImGui::SFML::Update(window, sf::seconds(delta_time));
     
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.1f, 0.7f));
+	ImGui::SetNextWindowSize(ImVec2(350.0f, 700.0f), ImGuiCond_Always);
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x - 10.0f, 10.0f), ImGuiCond_Always, ImVec2(1.0f, 0.0f));
     ImGui::Begin("Scene Settings", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
 
@@ -258,19 +261,23 @@ void Simulation::updateUI()
 
         Planet& p = planets[selectedPlanet];
         
+        bool requestAdd = false;
+        bool requestRemove = false;
         if (ImGui::Button("Add Planet"))
         {
-            addPlanet(sf::Vector2f(0.0f, 0.0f), 500.0f);
+            requestAdd = true;
         };
         ImGui::SameLine();
         if (ImGui::Button("Remove Planet"))
         {
-            removePlanet(selectedPlanet);
-            if (selectedPlanet >= planets.size())
-            {
-                selectedPlanet = 0;
-            }
+            requestRemove = true;
         };
+
+		std::string name = p.getName();
+        if (ImGui::InputText("Planet Name", &name))
+        {
+			p.setName(name);
+        }
 
         float init_pos[2] = { p.getInitialPosition().x, p.getInitialPosition().y };
         if (ImGui::DragFloat2("Start Position", init_pos, 1.0f, 0.0f, 0.0f, "%.1f"))
@@ -302,6 +309,18 @@ void Simulation::updateUI()
             p.setMass(mass);
         }
 
+        float radius = p.getRadius();
+        if (ImGui::DragFloat("Radius", &radius, 1.0f, 0.0f, 0.0f, "%.1f"))
+        {
+            p.setRadius(radius);
+        }
+
+        if( ImGui::Button("Set As Start Values"))
+        {
+            p.setInitialPosition(p.getPosition());
+			p.setInitialVelocity(p.getVelocity());
+		}
+
         float col[3] = {
             p.getColor().r / 255.0f,
             p.getColor().g / 255.0f,
@@ -322,6 +341,16 @@ void Simulation::updateUI()
         }
         ImGui::Checkbox("Draw Vel Arrow", &draw_vel_arrow);
         ImGui::Checkbox("Draw Acc Arrow", &draw_acc_arrow);
+
+        if (requestAdd)
+        {
+            addPlanet(sf::Vector2f(0.0f, 0.0f), 500.0f);
+        }
+
+        if (requestRemove)
+        {
+            removePlanet(selectedPlanet);
+        }
     }
     
     sf::View camera = renderer.getCamera();
@@ -334,7 +363,7 @@ void Simulation::updateUI()
     ImGui::Text("Zoom: %.2f", cam_zoom);
     if (ImGui::Button("Reset Camera"))
     {
-        if (follow_planet)
+        if (follow_planet && selectedPlanet << planets.size())
         {
             renderer.setCameraPos(planets[selectedPlanet].getPosition());
         }
@@ -351,6 +380,7 @@ void Simulation::updateUI()
     ImGui::Text("Frame rate: %.1f FPS", ImGui::GetIO().Framerate);
     
     ImGui::End();
+    ImGui::PopStyleColor();
 }
 
 bool Simulation::isStopped()

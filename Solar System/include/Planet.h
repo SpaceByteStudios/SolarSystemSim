@@ -43,7 +43,9 @@ public:
 	void setPosition(const sf::Vector2f& pos);
 	void setVelocity(const sf::Vector2f& vel);
 	void setAcceleration(const sf::Vector2f& acc);
+	void setRadius(float radius);
 	void setMass(float mass);
+	void setName(const std::string& name);
 	void setColor(const sf::Color& color);
 private:
 	sf::Vector2f initial_position;

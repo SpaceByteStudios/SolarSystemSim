@@ -12,7 +12,7 @@
 int main()
 {
     HWND console = GetConsoleWindow();
-    ShowWindow(console, SW_HIDE);
+    //ShowWindow(console, SW_HIDE);
 
     const float gravity = 10000.0f;
     sf::Vector2f midpoint(640.0f, 360.0f);

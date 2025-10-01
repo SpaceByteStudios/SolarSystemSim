@@ -58,7 +58,14 @@ Planet::Planet(const sf::Vector2f& pos, const sf::Vector2f& vel, float mass) :
 
 void Planet::applyForce(const sf::Vector2f& force)
 {
-	acceleration += force / mass;
+	if (mass <= 0.0f)
+	{
+		acceleration += force;
+	}
+	else
+	{
+		acceleration += force / mass;
+	}
 }
 
 void Planet::applyGravity(std::vector<Planet>& planets, float G)
@@ -94,6 +101,8 @@ void Planet::updateShapePos()
 void Planet::updateLabelPos()
 {
 	label->setPosition(sf::Vector2f(position.x, position.y + radius + 7));
+	sf::FloatRect textRect = label->getLocalBounds();
+	label->setOrigin(sf::Vector2f(textRect.size.x / 2.0f, textRect.size.y / 2.0f));
 }
 
 void Planet::updatePos(float deltaTime)
@@ -221,7 +230,8 @@ void Planet::reset()
 
 void Planet::initLabel(const sf::Font& font)
 {
-	label.emplace(font, name, 14);
+	label.emplace(font, name);
+	label->setCharacterSize(14);
 	label->setFillColor(sf::Color::Transparent);
 	sf::FloatRect textRect = label->getLocalBounds();
 	label->setOrigin(sf::Vector2f(textRect.size.x / 2.0f, textRect.size.y / 2.0f));
@@ -319,12 +329,26 @@ void Planet::setAcceleration(const sf::Vector2f& acc)
 	acceleration = acc;
 }
 
+void Planet::setRadius(float radius)
+{
+	this->radius = radius;
+	shape.setRadius(radius);
+	shape.setOrigin(sf::Vector2f(radius, radius));
+}
+
 void Planet::setMass(float mass)
 {
 	this->mass = mass;
 	radius = sqrt(this->mass / std::numbers::pi_v<float>);
 	shape.setRadius(radius);
 	shape.setOrigin(sf::Vector2f(radius, radius));
+}
+
+void Planet::setName(const std::string& name)
+{
+	this->name = name;
+	if (label)
+		label->setString(name);
 }
 
 void Planet::setColor(const sf::Color& color)

@@ -45,6 +45,9 @@
     <ClCompile Include="src\imgui\imgui_demo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\imgui\imgui_stdlib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Planet.h">
@@ -83,11 +86,15 @@
     <ClInclude Include="include\imgui\imgui-SFML_export.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\imgui\imgui_stdlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\arial.ttf" />
+    <Font Include="assets\SpaceMono.ttf" />
   </ItemGroup>
 </Project>
