@@ -2,6 +2,29 @@
 #include <iostream>
 #include <random>
 #include "Planet.h"
+#include "nlohmann/json.hpp"
+
+void to_json(nlohmann::json& j, const Planet& p)
+{
+	j = nlohmann::json{
+		{"name", p.getName()},
+		{"init_position", {p.getInitialPosition().x, p.getInitialPosition().y}},
+		{"init_velocity", {p.getInitialVelocity().x, p.getInitialVelocity().y}},
+		{"mass", p.getMass()},
+		{"radius", p.getRadius()},
+		{"color", {p.getColor().r, p.getColor().g, p.getColor().b}}
+	};
+}
+
+void from_json(const nlohmann::json& j, Planet& p)
+{
+	p.setName(j.at("name").get<std::string>());
+	p.setInitialPosition(sf::Vector2f(j.at("init_position")[0], j.at("init_position")[1]));
+	p.setInitialVelocity(sf::Vector2f(j.at("init_velocity")[0], j.at("init_velocity")[1]));
+	p.setMass(j.at("mass").get<float>());
+	p.setRadius(j.at("radius").get<float>());
+	p.setColor(sf::Color(j.at("color")[0], j.at("color")[1], j.at("color")[2]));
+}
 
 static const std::vector<std::string> planetNames = {
     "Aegir", "Boreas", "Ceres", "Draconis", "Erebus",
@@ -36,6 +59,9 @@ std::string getRandomName()
 	return planetNames[dist(gen)];
 }
 
+Planet::Planet() : Planet(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(0.0f, 0.0f), 100.0f)
+{}
+
 Planet::Planet(const sf::Vector2f& pos, float mass) : Planet(pos, sf::Vector2f(0.0f, 0.0f), mass)
 {}
 
@@ -50,6 +76,7 @@ Planet::Planet(const sf::Vector2f& pos, const sf::Vector2f& vel, float mass) :
 	name = getRandomName();
 	showing_trail = false;
 
+	shape.setPointCount(32);
 	shape.setRadius(radius);
 	shape.setPosition(position);
 	shape.setFillColor(sf::Color::Red);
@@ -251,12 +278,12 @@ void Planet::showTrail(bool showing)
 	showing_trail = showing;
 }
 
-sf::Vector2f Planet::getInitialPosition()
+sf::Vector2f Planet::getInitialPosition() const
 {
 	return initial_position;
 }
 
-sf::Vector2f Planet::getInitialVelocity()
+sf::Vector2f Planet::getInitialVelocity() const
 {
 	return initial_velocity;
 }
@@ -276,22 +303,22 @@ sf::Vector2f Planet::getAcceleration()
 	return acceleration;
 }
 
-float Planet::getRadius()
+float Planet::getRadius() const
 {
 	return radius;
 }
 
-float Planet::getMass()
+float Planet::getMass() const
 {
 	return mass;
 }
 
-std::string Planet::getName()
+std::string Planet::getName() const
 {
 	return name;
 }
 
-sf::Color Planet::getColor()
+sf::Color Planet::getColor() const
 {
 	return color;
 }

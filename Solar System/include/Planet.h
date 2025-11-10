@@ -1,10 +1,12 @@
 #pragma once
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
+#include <nlohmann/json.hpp>
 
 class Planet
 {
 public:
+	Planet();
 	Planet(const sf::Vector2f& pos, float mass);
 	Planet(const sf::Vector2f& pos, const sf::Vector2f& vel, float mass);
 
@@ -27,15 +29,15 @@ public:
 	void showLabel(bool showing);
 	void showTrail(bool showing);
 
-	sf::Vector2f getInitialPosition();
-	sf::Vector2f getInitialVelocity();
+	sf::Vector2f getInitialPosition() const;
+	sf::Vector2f getInitialVelocity() const;
 	sf::Vector2f getPosition();
 	sf::Vector2f getVelocity();
 	sf::Vector2f getAcceleration();
-	float getRadius();
-	float getMass();
-	std::string getName();
-	sf::Color getColor();
+	float getRadius() const;
+	float getMass() const;
+	std::string getName() const;
+	sf::Color getColor() const;
 	sf::CircleShape getShape();
 	
 	void setInitialPosition(const sf::Vector2f& init_pos);
@@ -66,3 +68,6 @@ private:
 	sf::Color color;
 	sf::CircleShape shape;
 };
+
+void to_json(nlohmann::json& j, const Planet& p);
+void from_json(const nlohmann::json& j, Planet& p);

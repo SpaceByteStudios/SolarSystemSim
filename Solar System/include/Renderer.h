@@ -2,6 +2,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include "Planet.h"
+#include "Rocket.h"
 
 class Renderer
 {
@@ -24,6 +25,7 @@ public:
 	sf::View getCamera();
 
 	void renderPlanets(std::vector<Planet>& planets);
+	void renderRocket(Rocket& rocket);
 private:
 	sf::RenderWindow& window;
 	sf::View camera;

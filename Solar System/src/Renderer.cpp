@@ -4,6 +4,7 @@ Renderer::Renderer(sf::RenderWindow& renderWindow) :
 	window(renderWindow)
 {
 	window.setFramerateLimit(60);
+	window.setVerticalSyncEnabled(true);
 	camera = sf::View(sf::FloatRect(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(window.getSize().x, window.getSize().y)));
 }
 
@@ -69,4 +70,10 @@ void Renderer::renderPlanets(std::vector<Planet>& planets)
 		window.setView(window.getDefaultView());
 		planets[i].drawLabel(window, camera);
 	}
+}
+
+void Renderer::renderRocket(Rocket& rocket)
+{
+	window.setView(camera);
+	rocket.draw(window);
 }
